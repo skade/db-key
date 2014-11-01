@@ -1,6 +1,7 @@
 pub trait Key {
   fn from_u8(key: &[u8]) -> Self;
   fn as_slice<T>(self, f: |v: &[u8]| -> T) -> T;
+  fn name() -> &'static str;
   fn compare(&self, _other: &Self) -> Ordering {
     Equal
   }
@@ -27,6 +28,10 @@ impl Key for int {
     dst[2] = (self >> 8) as u8;
     dst[3] = self as u8;
     f(dst)
+  }
+
+  fn name() -> &'static str {
+    "int"
   }
 
   fn compare(&self, other: &int) -> Ordering {
