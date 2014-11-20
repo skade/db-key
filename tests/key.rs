@@ -4,31 +4,27 @@ use key::Key;
 use key::from_u8;
 
 enum MyValues {
-  One,
-  Two
+  One
 }
 
 struct MyKey {
+  #[allow(dead_code)]
   val: MyValues
 }
 
 impl Key for MyKey {
-  fn from_u8(key: &[u8]) -> MyKey {
+  fn from_u8(_key: &[u8]) -> MyKey {
     MyKey { val: MyValues::One }
   }
 
   fn as_slice<T>(self, f: |v: &[u8]| -> T) -> T {
     f("test".as_bytes())
   }
-
-  fn compare(&self, _other: &MyKey) -> Ordering {
-    Equal
-  }
 }
 
 #[test]
 fn test() {
-  let key: MyKey = from_u8("test".as_bytes());
+  from_u8::<MyKey>("test".as_bytes());
 }
 
 #[test]
