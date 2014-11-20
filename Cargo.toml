@@ -1,6 +1,6 @@
 [package]
 
-name = "db-key"
+name = "db_key"
 version = "0.0.1"
 authors = ["Florian Gilcher <florian.gilcher@asquera.de>"]
 
