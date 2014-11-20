@@ -1,5 +1,5 @@
 [package]
 
-name = "key"
+name = "db-key"
 version = "0.0.1"
 authors = ["Florian Gilcher <florian.gilcher@asquera.de>"]
