@@ -17,7 +17,7 @@ impl Key for MyKey {
     MyKey { val: MyValues::One }
   }
 
-  fn as_slice<T>(self, f: |v: &[u8]| -> T) -> T {
+  fn as_slice<T>(&self, f: |v: &[u8]| -> T) -> T {
     f("test".as_bytes())
   }
 }
