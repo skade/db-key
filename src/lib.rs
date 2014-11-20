@@ -26,7 +26,7 @@ impl Key for int {
     dst[1] = (self >> 16) as u8;
     dst[2] = (self >> 8) as u8;
     dst[3] = self as u8;
-    f(dst)
+    f(&dst)
   }
 
   fn compare(&self, other: &int) -> Ordering {

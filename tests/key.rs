@@ -14,7 +14,7 @@ struct MyKey {
 
 impl Key for MyKey {
   fn from_u8(key: &[u8]) -> MyKey {
-    MyKey { val: One }
+    MyKey { val: MyValues::One }
   }
 
   fn as_slice<T>(self, f: |v: &[u8]| -> T) -> T {
@@ -33,7 +33,7 @@ fn test() {
 
 #[test]
 fn test2() {
-  let key = MyKey { val: One };
+  let key = MyKey { val: MyValues::One };
   key.as_slice(|k| {
     assert_eq!(k, "test".as_bytes())
   })
