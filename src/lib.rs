@@ -18,7 +18,7 @@ impl Key for int {
   }
 
   fn as_slice<T>(&self, f: |v: &[u8]| -> T) -> T {
-    let mut dst = [0u8, ..4];
+    let mut dst = [0u8,0,0,0];
     dst[0] = (*self >> 24) as u8;
     dst[1] = (*self >> 16) as u8;
     dst[2] = (*self >> 8) as u8;
