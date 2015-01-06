@@ -1,6 +1,6 @@
 pub trait Key {
   fn from_u8(key: &[u8]) -> Self;
-  fn as_slice<T>(&self, f: |v: &[u8]| -> T) -> T;
+  fn as_slice<T, F: Fn(&[u8]) -> T>(&self, f: F) -> T;
 }
 
 pub fn from_u8<K: Key>(key: &[u8]) -> K {
@@ -17,7 +17,7 @@ impl Key for int {
     (key[3] as int)
   }
 
-  fn as_slice<T>(&self, f: |v: &[u8]| -> T) -> T {
+  fn as_slice<T, F: Fn(&[u8]) -> T>(&self, f: F) -> T {
     let mut dst = [0u8,0,0,0];
     dst[0] = (*self >> 24) as u8;
     dst[1] = (*self >> 16) as u8;
