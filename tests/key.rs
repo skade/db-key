@@ -1,7 +1,7 @@
-extern crate key;
+extern crate db_key;
 
-use key::Key;
-use key::from_u8;
+use db_key::Key;
+use db_key::from_u8;
 
 enum MyValues {
   One
@@ -17,7 +17,7 @@ impl Key for MyKey {
     MyKey { val: MyValues::One }
   }
 
-  fn as_slice<T>(&self, f: |v: &[u8]| -> T) -> T {
+  fn as_slice<T, F:Fn(&[u8]) -> T>(&self, f: F) -> T {
     f("test".as_bytes())
   }
 }
