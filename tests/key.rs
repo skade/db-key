@@ -1,7 +1,7 @@
-extern crate db_key;
+extern crate "db-key" as key;
 
-use db_key::Key;
-use db_key::from_u8;
+use key::Key;
+use key::from_u8;
 
 enum MyValues {
   One
