@@ -1,36 +1,43 @@
-extern crate "db-key" as key;
+extern crate db_key as key;
 
 use key::Key;
-use key::from_u8;
 
+#[derive(PartialEq,Eq,PartialOrd,Ord,Debug,Copy,Clone)]
 enum MyValues {
   One
 }
 
+#[derive(Copy,Clone)]
 struct MyKey {
   #[allow(dead_code)]
   val: MyValues
 }
 
-impl Key for MyKey {
-  fn from_u8(_key: &[u8]) -> MyKey {
-    MyKey { val: MyValues::One }
-  }
+impl<'a> From<&'a [u8]> for MyKey {
+    fn from(key: &'a [u8]) -> MyKey {
+        use std::intrinsics::transmute;
 
-  fn as_slice<T, F:Fn(&[u8]) -> T>(&self, f: F) -> T {
-    f("test".as_bytes())
-  }
+        let key: &MyKey = unsafe { transmute(key.as_ptr()) };
+        *key
+    }
 }
 
-#[test]
-fn test() {
-  from_u8::<MyKey>("test".as_bytes());
+impl AsRef<[u8]> for MyKey {
+    fn as_ref(&self) -> &[u8] {
+        use std::intrinsics::transmute;
+        use std::slice::from_raw_parts;
+        use std::mem::size_of;
+
+        unsafe { from_raw_parts(transmute(self), size_of::<MyKey>()) }
+    }
 }
 
+impl<'a> Key<'a> for MyKey {}
+
 #[test]
-fn test2() {
-  let key = MyKey { val: MyValues::One };
-  key.as_slice(|k| {
-    assert_eq!(k, "test".as_bytes())
-  })
+fn roundtrip() {
+    let key = MyKey { val: MyValues::One };
+    let reference = key.as_ref();
+    let key2: MyKey = From::from(reference);
+    assert_eq!(key2.val, MyValues::One);
 }
