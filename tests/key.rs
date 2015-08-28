@@ -1,36 +1,27 @@
-extern crate "db-key" as key;
+extern crate db_key as key;
+extern crate libc;
+
+use libc::{c_void};
 
 use key::Key;
-use key::from_u8;
 
+#[derive(Debug, Eq, PartialEq)]
 enum MyValues {
   One
 }
 
-struct MyKey {
-  #[allow(dead_code)]
-  val: MyValues
-}
-
-impl Key for MyKey {
-  fn from_u8(_key: &[u8]) -> MyKey {
-    MyKey { val: MyValues::One }
-  }
-
-  fn as_slice<T, F:Fn(&[u8]) -> T>(&self, f: F) -> T {
-    f("test".as_bytes())
-  }
-}
-
 #[test]
 fn test() {
-  from_u8::<MyKey>("test".as_bytes());
+    let key : &i32 = &1234413;
+    let (raw, len) = key.to_raw::<*mut c_void>();
+    let key2 : &i32 = Key::from_raw(raw, len);
+    assert_eq!(&1234413, key2);
 }
 
 #[test]
 fn test2() {
-  let key = MyKey { val: MyValues::One };
-  key.as_slice(|k| {
-    assert_eq!(k, "test".as_bytes())
-  })
+  let key = &MyValues::One;
+  let (raw, len) = key.to_raw::<*mut c_void>();
+  let key2 : &MyValues = Key::from_raw(raw, len);
+  assert_eq!(key2, &MyValues::One);
 }

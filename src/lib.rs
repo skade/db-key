@@ -1,28 +1,23 @@
-pub trait Key {
-  fn from_u8(key: &[u8]) -> Self;
-  fn as_slice<T, F: Fn(&[u8]) -> T>(&self, f: F) -> T;
+pub unsafe trait Key {
+    fn from_raw<T>(key: *mut T, len: usize) -> Self;
+    fn to_raw<T>(self) -> (*mut T, usize);
 }
 
-pub fn from_u8<K: Key>(key: &[u8]) -> K {
-  Key::from_u8(key)
-}
+unsafe impl<'a, K: Sized> Key for &'a K {
+    fn from_raw<T>(key: *mut T, len: usize) -> &'a K {
+        use std::mem::transmute;
+        use std::mem::size_of;
 
-impl Key for i32 {
-  fn from_u8(key: &[u8]) -> i32 {
-    assert!(key.len() == 4);
+        assert!(len == size_of::<K>());
+        unsafe { transmute(key) }
+    }
 
-    (key[0] as i32) << 24 |
-    (key[1] as i32) << 16 |
-    (key[2] as i32) << 8 |
-    (key[3] as i32)
-  }
+    fn to_raw<T>(self) -> (*mut T, usize) {
+        use std::mem::transmute;
+        use std::mem::size_of;
 
-  fn as_slice<T, F: Fn(&[u8]) -> T>(&self, f: F) -> T {
-    let mut dst = [0u8,0,0,0];
-    dst[0] = (*self >> 24) as u8;
-    dst[1] = (*self >> 16) as u8;
-    dst[2] = (*self >> 8) as u8;
-    dst[3] = *self as u8;
-    f(&dst)
-  }
+        let val = unsafe { transmute(self) };
+        let len = size_of::<K>();
+        (val, len)
+    }
 }

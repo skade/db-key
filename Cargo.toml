@@ -9,3 +9,6 @@ description = "A datatype intended to be used as a database key."
 readme = "README.md"
 
 license = "MIT"
+
+[dev-dependencies]
+libc = "*"
